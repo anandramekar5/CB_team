@@ -1,0 +1,259 @@
+<div class="row mt-4">
+  <div class="col-md-8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- displayedColumns: string[] = [
+                    'srNo',
+                    'personName',
+                    'mobileNo',
+                    'designation',
+                    'city',
+                    'dob',
+                  ]; -->
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="srNo">
+        <th mat-header-cell *matHeaderCellDef>srNo.</th>
+        <td mat-cell *matCellDef="let element">{{ element.srNo }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="personName">
+        <th mat-header-cell *matHeaderCellDef>personName</th>
+        <td mat-cell *matCellDef="let element">{{ element.personName }}</td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="mobileNo">
+        <th mat-header-cell *matHeaderCellDef>mobileNo</th>
+        <td mat-cell *matCellDef="let element">{{ element.mobileNo }}</td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef>designation</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.designation.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="city">
+        <th mat-header-cell *matHeaderCellDef>city</th>
+        <td mat-cell *matCellDef="let element">{{ element.city }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dob">
+        <th mat-header-cell *matHeaderCellDef>dob</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.dob | date: "dd/MM/YYYY" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>action</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            matTooltip="Click to Edit"
+            (click)="edit(element)"
+            class="iconbutton"
+            style="color: rgb(210, 25, 25)"
+          >
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <form [formGroup]="userForm" (ngSubmit)="postCbData()">
+      <div class="container offset-5">
+        <h4 class="text-danger"><strong>CB-Team</strong></h4>
+      </div>
+      <div class="">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name" formControlName="personName" />
+          <mat-error *ngIf="f['personName'].touched && f['personName'].errors">
+            <mat-error *ngIf="f['personName'].errors['required']">
+              Name is mandatory
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dob" />
+          <mat-error *ngIf="f['dob'].touched && f['dob'].errors">
+            <mat-error *ngIf="f['dob'].errors['required']">
+              date of birth is mandatory
+            </mat-error>
+          </mat-error>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Mobile No.</mat-label>
+          <input matInput placeholder="Mobile No." formControlName="mobileNo" />
+          <mat-error *ngIf="f['mobileNo'].touched && f['mobileNo'].errors">
+            <mat-error *ngIf="f['mobileNo'].errors['required']">
+              Mobile Number is mandatory
+            </mat-error>
+            <mat-error *ngIf="f['mobileNo'].errors['minlength']">
+              Mobile Number must be at least 10 digits
+            </mat-error>
+            <mat-error *ngIf="f['mobileNo'].errors['maxlength']">
+              Mobile Number must be at least 12 digits
+            </mat-error>
+            <mat-error
+              *ngIf="f['mobileNo'].errors['pattern'] && f['mobileNo'].dirty"
+            >
+              Mobile Number must be numeric only
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Email ID</mat-label>
+          <input matInput placeholder="Email ID" formControlName="emailId" />
+          <mat-error *ngIf="f['emailId'].touched && f['emailId'].errors">
+            <mat-error *ngIf="f['emailId'].errors['required']">
+              email address is mandatory
+            </mat-error>
+            <mat-error *ngIf="f['emailId'].errors['pattern']">
+              *email address is invalid
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Select Country</mat-label>
+          <mat-select formControlName="country">
+            <mat-option value="0">Select Country</mat-option>
+            <mat-option
+              *ngFor="let countries of countryDropdown"
+              [value]="countries"
+              >{{ countries.name }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="f['country'].touched && f['country'].errors">
+            <mat-error *ngIf="f['country'].errors['required']">
+              Country Field is mandatory
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Select State</mat-label>
+          <mat-select formControlName="state">
+            <mat-option value="0">Select State</mat-option>
+            <mat-option *ngFor="let states of stateDropdown" [value]="states">{{
+              states.name
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="f['state'].touched && f['state'].errors">
+            <mat-error *ngIf="f['state'].errors['required']">
+              State Field is mandatory
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput placeholder="City" formControlName="city" />
+          <mat-error *ngIf="f['city'].touched && f['city'].errors">
+            <mat-error *ngIf="f['city'].errors['required']">
+              city is mandatory
+            </mat-error>
+            <mat-error *ngIf="f['city'].errors['pattern']">
+              *city must be alphabets only
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput placeholder="Address" formControlName="address" />
+          <mat-error *ngIf="f['address'].touched && f['address'].errors">
+            <mat-error *ngIf="f['address'].errors['required']">
+              address is mandatory
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Pincode</mat-label>
+          <input matInput placeholder="Pincode" formControlName="pinCode" />
+          <mat-error *ngIf="f['pinCode'].touched && f['pinCode'].errors">
+            <mat-error *ngIf="f['pinCode'].errors['required']">
+              Postal Code is mandatory
+            </mat-error>
+            <mat-error *ngIf="f['pinCode'].errors['pattern']">
+              *must be digits only
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Select Designation</mat-label>
+          <mat-select formControlName="designation">
+            <mat-option value="0">Select Designation</mat-option>
+            <mat-option
+              *ngFor="let designations of designationDropdown"
+              [value]="designations"
+              >{{ designations.name }}</mat-option
+            >
+          </mat-select>
+          <mat-error
+            *ngIf="f['designation'].touched && f['designation'].errors"
+          >
+            <mat-error *ngIf="f['designation'].errors['required']">
+              Designation Field is mandatory
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1 offset-4">
+        <button
+          type="submit"
+          [disabled]="userForm.invalid"
+          mat-raised-button
+          color="primary"
+        >
+          {{ buttonName }}
+        </button>
+        <button style="margin-left: 20px" mat-raised-button color="warn">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
