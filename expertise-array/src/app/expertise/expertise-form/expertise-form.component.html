@@ -1,0 +1,120 @@
+<div class="row mt-4">
+  <div class="col-md-8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- displayedColumns: string[] = [
+                      'srNo',
+                      'Expertise Area',
+                      'Category Name',
+                      'Action',
+                    ]; -->
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="srNo">
+        <th mat-header-cell *matHeaderCellDef>srNo.</th>
+        <td mat-cell *matCellDef="let element">{{ element.srNo }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="Expertise Area">
+        <th mat-header-cell *matHeaderCellDef>Expertise Area</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.expertiseAreaName }}
+        </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="Category Name">
+        <th mat-header-cell *matHeaderCellDef>Category Name</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.categoryName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Action">
+        <th mat-header-cell *matHeaderCellDef>action</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            matTooltip="Click to Edit"
+            class="iconbutton"
+            style="color: rgb(210, 25, 25)"
+          >
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Click to Edit"
+            class="iconbutton"
+            style="color: rgb(210, 25, 25)"
+          >
+            <mat-icon aria-label="Edit">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <form [formGroup]="expertiseForm" (ngSubmit)="postAllData()">
+      <div class="mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Select Category</mat-label>
+          <mat-select formControlName="categoryName">
+            <mat-option value="0">Select Category</mat-option>
+            <mat-option
+              *ngFor="let categories of categoriesDropdown"
+              [value]="categories"
+              >{{ categories.categoryName }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="mt-1">
+        <ng-container formArrayName="expertiseAreaNames">
+          <ng-container
+            *ngFor="let address of addressControls.controls; let i = index"
+          >
+            <ng-container [formGroupName]="i">
+              <mat-form-field appearance="fill">
+                <mat-label>Expertise Area</mat-label>
+                <input
+                  matInput
+                  placeholder="Expertise Area"
+                  formControlName="expertiseAreaName"
+                />
+                <!-- <span ></span> -->
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-info mb-2 mt-2 offset-8 text-white"
+        (click)="addExpertise()"
+      >
+        <strong>+</strong> Add Expertise Area
+      </button>
+
+      <div class="mt-1 offset-4">
+        <button
+          type="submit"
+          [disabled]="expertiseForm.invalid"
+          mat-raised-button
+          color="primary"
+        >
+          Add
+        </button>
+        <button style="margin-left: 20px" mat-raised-button color="warn">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
