@@ -1,0 +1,41 @@
+<div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        
+        <ng-container matColumnDef="productType">
+            <th mat-header-cell *matHeaderCellDef>productType</th>
+            <td mat-cell *matCellDef="let element">{{ element.productType }}</td>
+        </ng-container>
+
+   
+        <ng-container matColumnDef="ProductDetails">
+            <th mat-header-cell *matHeaderCellDef>ProductDetails</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.ProductDetails }}
+            </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>action</th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-icon-button matTooltip="Click to Edit" (click)="onEdit(element)" class="iconbutton"
+                    style="color: rgb(210, 25, 25)">
+                    <mat-icon aria-label="Edit" >edit</mat-icon>
+                </button>
+                <button mat-icon-button matTooltip="Click to Delete" class="iconbutton"
+                style="color: rgb(210, 25, 25)">
+                <mat-icon aria-label="Delete">delete</mat-icon>
+            </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+</div>
