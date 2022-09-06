@@ -48,85 +48,30 @@ export class TableComponent implements OnInit {
    })
    this.getData();
  }
- // getRadio(val: any) {
- //   console.log(val.value);
- //   this.prodVar = val.value;
- // }
-
- getSelectedType(val: any, i: number,flag:string) {
-
-   if(flag == 'Furniture'){
-     if (val.checked) { //it returns true while clicked on checkbox //else it returns false while unclicked on checkbox
-       this.FurnitureArr[i].checked = true;
-     }
-     else { 
-       this.FurnitureArr[i].checked = false;
-     }
- 
-   }
-
-   if(flag == "Electrical"){
-   if (val.checked) {
-     this.ElectricalArr[i].checked = true;
-   }
-   else {
-     this.ElectricalArr[i].checked = false;
-   }
- }
-}
-
- onSubmit() {
-   console.log(this.productForm);
-   
-   
-   // console.log(obj1);
-   // console.log(typeof(obj1));
-     
-   if(this.productForm.value.productType == 'Electrical'){
-    
-     this.ElectricalArr.find((ele: any) => {
-       if (ele.checked) {
-         this.newArr.push(ele.name);
-       }
-     })
-   }
-   if(this.productForm.value.productType == 'Furniture'){
-     
-     this.FurnitureArr.find((ele: any) => {
-       if (ele.checked) {
-         this.newArr.push(ele.name);
-       }
-     })
-   }
-
-   this.productForm.value.ProductDetails = this.newArr;
-   
-   let obj = JSON.stringify(this.productForm.value);
-   localStorage.setItem('productData',obj);
-  //  this.getData();
- }
 
  getData(){
-   let obj = JSON.parse(localStorage.getItem('productData') || '');
-   this.dataSource.push(obj);
-   // let obj1 = [obj]
-   // this.dataSource = obj1;
+   let obj = JSON.parse(localStorage.getItem('productData') || '[]');
+  //  this.dataSource.push(obj);
+  //  let obj1 = [obj]
+   this.dataSource = obj;
  }
 
  onEdit(ele:any){
   this.openBottomSheet(ele);
-  //  this.productForm.patchValue({
-  //    name:ele.name,
-  //    productType: ele.productType,
-  //    ProductDetails: ele.ProductDetails,
-  //  })
+ 
  }
 
 
   openBottomSheet(dataaa: any): void {
-    this._bottomSheet.open(RadcheckComponent,{
+   let sheet =  this._bottomSheet.open(RadcheckComponent,{
       data: dataaa,
       
     });
+    sheet.afterDismissed().subscribe(x => {
+      if (x == 'true') {
+        this.getData();
+      }
+    });
   }
+  
 }

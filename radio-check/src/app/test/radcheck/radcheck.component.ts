@@ -2,14 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
-// export interface PeriodicElement {
-//      name:string,
-//      productType:string;
-//      ProductDetails:string;
-// }
-
-// const ELEMENT_DATA: PeriodicElement[] = [];
-
 @Component({
   selector: 'app-radcheck',
   templateUrl: './radcheck.component.html',
@@ -23,6 +15,7 @@ export class RadcheckComponent implements OnInit {
      'ProductDetails',
      'action'
   ];
+  // formData!:any;
   dataSource:any=[];
   editData: any;
   prodVar!: any;
@@ -55,14 +48,15 @@ export class RadcheckComponent implements OnInit {
       ProductDetails: [objj ? objj.ProductDetails : '']
     })
     if(objj){
+      this.editFlag = true;
       let arr = objj.ProductDetails;
 
     this.newArr = this.productForm.value.productType == 'Electrical' ? this.ElectricalArr : this.FurnitureArr;
 
     this.newArr.find((ele:any)=>{
-      console.log(ele);
+      // console.log(ele);
       arr.find((items:any)=>{
-        console.log(items);
+        // console.log(items);
         if(ele.name == items){
           ele.checked = true;
         }
@@ -80,10 +74,7 @@ export class RadcheckComponent implements OnInit {
       // })
       
   }
-  // getRadio(val: any) {
-  //   console.log(val.value);
-  //   this.prodVar = val.value;
-  // }
+ 
 
   getSelectedType(val: any, i: number,flag:string) {
 
@@ -107,13 +98,11 @@ export class RadcheckComponent implements OnInit {
 }
 
   onSubmit() {
-    console.log(this.productForm);
-    
-    
-    // console.log(obj1);
-    // console.log(typeof(obj1));
-      
-    if(this.productForm.value.productType == 'Electrical'){
+    if(!this.editFlag){
+      console.log(this.productForm);
+    let obj1 = JSON.parse(localStorage.getItem('productData') ||'[]');
+    let formData = this.productForm.value;
+    if(formData.productType == 'Electrical'){
      
       this.ElectricalArr.find((ele: any) => {
         if (ele.checked) {
@@ -121,7 +110,7 @@ export class RadcheckComponent implements OnInit {
         }
       })
     }
-    if(this.productForm.value.productType == 'Furniture'){
+    if(formData.productType == 'Furniture'){
       
       this.FurnitureArr.find((ele: any) => {
         if (ele.checked) {
@@ -130,20 +119,44 @@ export class RadcheckComponent implements OnInit {
       })
     }
 
-    this.productForm.value.ProductDetails = this.newArr;
-    
-    let obj = JSON.stringify(this.productForm.value);
-    localStorage.setItem('productData',obj);
+    formData.ProductDetails = this.newArr;
 
     
-    this._bottomSheet.dismiss();
+    if (obj1.length) {
+      formData.id = obj1.length + 1;
+      formData = [formData, ...obj1];
+    } else {
+      formData.id = 1;
+      formData = [formData];
+    }
+    
+    localStorage.setItem('productData',JSON.stringify(formData));
+    
+  
+    }
+    else{
+      let storeData =  JSON.parse(localStorage.getItem('productData') ||'[]');
+      // console.log("aaa",storeData);
+      // console.log("formdata",this.productForm);
+
+      let testdata = this.data;
+
+     const findId =  storeData.find((ele:any)=>{
+       if(testdata.name == ele.name){
+          return ele;
+       }
+      })
+
+      console.log("ele",findId.id);
+
+     
+    }
+    this._bottomSheet.dismiss('true');
   }
 
   getData(){
-    let obj = JSON.parse(localStorage.getItem('productData') || '');
-    this.dataSource.push(obj);
-    // let obj1 = [obj]
-    // this.dataSource = obj1;
+    let obj = JSON.parse(localStorage.getItem('productData') || '[]');
+    this.dataSource = obj;
   }
 
   // onEdit(ele:any){
@@ -156,55 +169,29 @@ export class RadcheckComponent implements OnInit {
   //   })
   // }
 
-  updateData(){
-    // this.productForm.patchValue({
-    //   name:this.editData.name,
-    //   productType: this.editData.productType,
-    //   ProductDetails: this.editData.ProductDetails,
-    // })
-
-    // let arr = this.editData.ProductDetails;
-
-    // this.newArr = this.productForm.value.productType == 'Electrical' ? this.ElectricalArr : this.FurnitureArr;
-
-    // this.newArr.find((ele:any)=>{
-    //   arr.find((items:any)=>{
-    //     if(ele.name == items){
-    //       ele.checked = true;
-    //     }
-    //   })
-      
-    // })
-  }
+  // updateData(){
+    
+  // }
+  
 }
 
 
-// onSubmit() {
-//   let studentData = JSON.parse(localStorage.getItem('studentData') || '[]');
-//   this.courseArray = this.stdFrm.value.branchType == 'IT' ? this.itCourse : this.mechCourse
-//   console.log(this.courseArray);
-//   this.courseArray.find((res: any) => {
-// // res.checked ? this.newArr.push(res.name) : '';
-//   if(res.checked)
-//     {
-//       this.newArr.push(res.name)
-//     }
-//   });
-//   this.stdFrm.value.courseList = this.newArr;
-//   console.log(this.stdFrm.value);
-//   let formData = this.stdFrm.value;
-//   if (localStorage.getItem('studentData')) {
-//     formData.id = studentData.length + 1;
-//     formData = [formData, ...studentData];
-//   } else {
-//     formData.id = 1;
-//     formData = [formData];
-//   }
-//   localStorage.setItem('studentData', JSON.stringify(formData));
-//   this.getValue(); 
+// else{
+//   this.editFlag = true;
+//   let student =this.stdFrm.value;
+//     console.log("data", this.data);
+    
+//   let students = JSON.parse(localStorage.getItem('data') || '');
+  
+//   const studentList = [...students];
 
-//   if(!this.editFlag)
-//   {
-
-//   }
+//   const index = students.findIndex((obj: any) => 
+//    obj.id == student.id
+    
+//      );
+//   console.log(index);
+  
+//   studentList[index] = student;
+//   localStorage.setItem('data', JSON.stringify(studentList));
+//   this._bottomSheet.dismiss();
 // }

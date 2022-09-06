@@ -14,7 +14,7 @@ export class AppComponent {
   constructor(private _bottomSheet: MatBottomSheet){}
   openBottomSheet(): void {
     this._bottomSheet.open(RadcheckComponent,{
-      ariaLabel: 'Share on social media'
+      
     });
   }
 }
