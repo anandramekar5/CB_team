@@ -1,0 +1,19 @@
+form {
+  margin: 30px;
+}
+mat-form-field {
+  width: 40%;
+  margin-left: 40px;
+}
+
+mat-radio-group {
+  margin-left: 20px;
+}
+
+mat-radio-button {
+  margin-left: 20px;
+}
+
+mat-checkbox {
+  margin: 35px;
+}
